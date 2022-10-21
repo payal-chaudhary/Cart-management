@@ -97,9 +97,9 @@ module.exports = {
             if (data.password && !v.isValidPassword(password)) {
                 return res.status(400).send({ status: false, message: "Length of the Password can be 8 to 15 !" })
             }
-            if (data.profileImage && !v.objectValue(profileImage)) {
-                return res.status(400).send({ status: false, message: "ProfileImage can contain a file Only!" })
-            }
+            // if (data.profileImage && !v.objectValue(profileImage)) {
+            //     return res.status(400).send({ status: false, message: "ProfileImage can contain a file Only!" })
+            // }
             if (data.profileImage &&
                 (!profileImage || (req.files.length == 0 || req.files[0].fieldname != 'profileImage'))) {
                 return res.status(400).send({ status: false, msg: "Please attach a file in ProfileImage!" })

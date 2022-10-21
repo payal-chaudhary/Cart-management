@@ -28,7 +28,7 @@ module.exports = {
             }
             let totalPrice = product.price * quantity
 
-
+////if cart id present//////////
             if (cartId) {
                 let productPresent = sameCartUser['items']
                 for (let i = 0; i < productPresent.length; i++) {
@@ -44,6 +44,7 @@ module.exports = {
                         return res.status(201).send({ status: true, message: "Success", data: cart })
                     }
                 }
+                /////add already present///
                 let cart = await cartModel.findByIdAndUpdate(
                     { _id: cartId },
                     { $push: { items: { productId: productId, quantity: quantity } }, $inc: { totalPrice: totalPrice, totalItems: 1 } },
@@ -51,6 +52,7 @@ module.exports = {
                 ).populate({ path: 'items.productId', model: 'product', select: { title: 1, productImage: 1, price: 1 } })
                 return res.status(201).send({ status: true, message: "Success", data: cart })
             }
+            /////if not present///////////
             let cart = await cartModel.create(
                 { userId: userId, items: { productId: productId, quantity: quantity }, totalPrice: totalPrice, totalItems: 1 })
             cart = await cart.populate({ path: 'items.productId', model: 'product', select: { title: 1, productImage: 1, price: 1 } })
@@ -107,9 +109,11 @@ module.exports = {
                         return res.status(200).send({ status: true, message: "Success", data: rmProduct })
                     }
                     if (cartItems[i].productId == productId && cartItems[i].quantity == 1){
+                        let decPrice = (cartItems[i].quantity)*(product.price)
+
                         let rmProduct = await cartModel.findOneAndUpdate(
                             { _id: cartId, 'items.productId': productId },
-                            { $inc: { totalPrice: -product.price, totalItems: -1 }, $pull: { items: { productId: productId } } },
+                            { $inc: { totalPrice: decPrice, totalItems: -1 }, $pull: { items: { productId: productId } } },
                             { new: true })
                         return res.status(200).send({ status: true, message: "Success", data: rmProduct })
                     }
@@ -118,9 +122,11 @@ module.exports = {
             if (removeProduct == 0) {
                 for (let i in cartItems) {
                     if (cartItems[i].productId == productId) {
+                        let decPrice = (cartItems[i].quantity)*(product.price)
+
                         let rmProduct = await cartModel.findOneAndUpdate(
                             { _id: cartId, 'items.productId': productId },
-                            { $inc: { totalPrice: -product.price, totalItems: -1 }, $pull: { items: { productId: productId } } },
+                            { $inc: { totalPrice: decPrice, totalItems: -1 }, $pull: { items: { productId: productId } } },
                             { new: true })
                         return res.status(200).send({ status: true, message: "Success", data: rmProduct })
                     }

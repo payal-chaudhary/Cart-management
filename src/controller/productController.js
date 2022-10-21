@@ -26,7 +26,7 @@ module.exports = {
             if (!currencyFormat) {
                 req.body.currencyFormat = '₹'
             }
-            if (Object.hasOwnProperty.bind(data)("isFreeShipping") && !isFreeShipping) {
+            if (!isFreeShipping) {
                 req.body.isFreeShipping = false
             }
             if (req.files) {

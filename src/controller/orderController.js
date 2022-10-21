@@ -41,7 +41,7 @@ module.exports = {
             let orderCreation = await orderModel.create(orderData)
             orderCreation = orderCreation.toObject()
             delete orderCreation["isDeleted"]
-            await cartModel.findOneAndUpdate({ _id: cartId, userId: userId, isDeleted: false }, { $set: { items: [], totalPrice: 0, totalQuantity: 0 } })
+            await cartModel.findOneAndUpdate({ _id: cartId, userId: userId, isDeleted: false }, { $set: { items: [], totalPrice: 0, totalQuantity: 0, totalItems:0} })
             return res.status(201).send({ status: true, message: "Success", data: orderCreation })
         } catch (err) {
             return res.status(500).send({ status: false, message: err.message })
