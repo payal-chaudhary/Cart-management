@@ -32,6 +32,7 @@ module.exports = {
             if (cartId) {
                 let productPresent = sameCartUser['items']
                 for (let i = 0; i < productPresent.length; i++) {
+                    /////already present item////
                     if (productPresent[i].productId == productId) {
                         let cart = await cartModel.findOneAndUpdate(
                             {
@@ -44,7 +45,7 @@ module.exports = {
                         return res.status(201).send({ status: true, message: "Success", data: cart })
                     }
                 }
-                /////add already present///
+                /////new ////
                 let cart = await cartModel.findByIdAndUpdate(
                     { _id: cartId },
                     { $push: { items: { productId: productId, quantity: quantity } }, $inc: { totalPrice: totalPrice, totalItems: 1 } },
@@ -98,9 +99,10 @@ module.exports = {
             if (!product) return res.status(404).send({ status: false, msg: "Product not found!" })
 
             let cartItems = cart.items
-
+//////////remove one quantity////////
             if (removeProduct == 1) {
                 for (let i in cartItems) {
+                    ////////if more than one quantity present/////////
                     if (cartItems[i].productId == productId && cartItems[i].quantity != 1) {
                         let rmProduct = await cartModel.findOneAndUpdate(
                             { _id: cartId, 'items.productId': productId },
@@ -108,6 +110,7 @@ module.exports = {
                             { new: true })
                         return res.status(200).send({ status: true, message: "Success", data: rmProduct })
                     }
+                    /////////if only one quantity present//////
                     if (cartItems[i].productId == productId && cartItems[i].quantity == 1){
                         let decPrice = (cartItems[i].quantity)*(product.price)
 
@@ -119,6 +122,7 @@ module.exports = {
                     }
                 }
             }
+            //////////remove all quantity of product//////////////
             if (removeProduct == 0) {
                 for (let i in cartItems) {
                     if (cartItems[i].productId == productId) {

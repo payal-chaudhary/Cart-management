@@ -7,11 +7,13 @@ module.exports = {
     authentication: async function (req, res, next) {
         try {
             let token = req.headers["authorization"];
+            console.log(token)
             if (!token) {
                 return res.status(401).send({ status: false, message: "Please provide token" })
             }
             token = token.replace(/^Bearer\s+/, "")
-            let decodedToken = jwt.verify(token, "group50", (err, decode) => {
+            console.log(token)
+            let decodedToken =jwt.verify(token, "group50", (err, decode) => {
                 if (err) {
                     let msg =
                         err.message === "jwt expired" ? "Token is expired" : "Token is invalid";
